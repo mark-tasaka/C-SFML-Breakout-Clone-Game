@@ -25,6 +25,11 @@ http://gamecodeschool.com/books/beginning-c-plus-plus-game-programming-2nd-editi
 
 ----------------------
 
+
+Update 1.01: 2021-02-13
+
+Added sounds to the game.  Changed the shape of the ball from a square to a circle and modified exisiting files.
+
 Initial commit: 2021-02-12
 
 The initial commit of the Breakout Clone game.
