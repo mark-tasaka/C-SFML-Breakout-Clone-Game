@@ -5,12 +5,12 @@
 * Beginning C++ Game Program (second edition), published by Packt>
 */
 
-Ball::Ball(float startX, float startY)
+
+Ball::Ball(double rad, float startX, float startY, Color colour): m_Shape(rad)
 {
 	m_Position.x = startX;
 	m_Position.y = startY;
-
-	m_Shape.setSize(sf::Vector2f(10, 10));
+	m_Shape.setFillColor(colour);
 	m_Shape.setPosition(m_Position);
 }
 
@@ -19,10 +19,11 @@ FloatRect Ball::getPosition()
 	return m_Shape.getGlobalBounds();
 }
 
-RectangleShape Ball::getShape()
+CircleShape Ball::getShape()
 {
 	return m_Shape;
 }
+
 
 float Ball::getXVelocity()
 {

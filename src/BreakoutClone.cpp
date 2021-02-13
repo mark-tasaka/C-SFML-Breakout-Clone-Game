@@ -1,21 +1,21 @@
+/*Breakout Clone is a student/hobby project created by Mark Tasaka
+* that builds on Mr. John Horton's 'Pong" game from his book
+* Beginning C++ Game Program (second edition), published by Packt>
+*/
 #include "Paddle.h"
 #include "Ball.h"
 #include <sstream>
 #include <cstdlib>
 #include <SFML/Graphics.hpp>
-
-
-/*Breakout Clone is a student/hobby project created by Mark Tasaka
-* that builds on Mr. John Horton's 'Pong" game from his book
-* Beginning C++ Game Program (second edition), published by Packt>
-*/
+#include <SFML/Audio.hpp>
+#include "stdafx.h"
 
 using namespace sf;
 
 
-
 const int SCREEN_WIDTH = 1200;
 const int SCREEN_HEIGHT = 900;
+const Color BALL_COLOUR = Color::Green;
 
 int main()
 {
@@ -27,14 +27,16 @@ int main()
 	//RenderWindow window(vm, "Breakout Clone", Style::Fullscreen);
 	RenderWindow window(vm, "Breakout Clone", Style::Close);
 
+	int level = 1;
 	int score = 0;
 	int lives = 3;
 
 	// Create a paddle
 	Paddle paddle(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 80);
 
-	// We will add a ball in the next chapter
-	Ball ball(SCREEN_WIDTH / 2, 0);
+	//Ball Object
+	//Ball ball(SCREEN_WIDTH / 2, 0);
+	Ball ball(6, SCREEN_WIDTH / 2, 0, BALL_COLOUR);
 
 	Texture background;
 	background.loadFromFile("graphic/background.png"); 
@@ -52,7 +54,7 @@ int main()
 	hud.setFont(font);
 
 	// Make it nice and big
-	hud.setCharacterSize(32);
+	hud.setCharacterSize(28);
 
 	// Choose a color
 	hud.setFillColor(Color::White);
@@ -61,6 +63,24 @@ int main()
 
 	// Here is our clock for timing everything
 	Clock clock;
+
+	//hit sound
+	SoundBuffer hitBuffer;
+	hitBuffer.loadFromFile("sound/hit.wav");
+	Sound hit;
+	hit.setBuffer(hitBuffer);
+
+	//hit paddle
+	SoundBuffer hitBufferPaddle;
+	hitBufferPaddle.loadFromFile("sound/hitPaddle.wav");
+	Sound hit2;
+	hit2.setBuffer(hitBufferPaddle);
+
+	//Miss sound
+	SoundBuffer missBuffer;
+	missBuffer.loadFromFile("sound/miss.wav");
+	Sound miss;
+	miss.setBuffer(missBuffer);
 
 	while (window.isOpen())
 	{
@@ -117,7 +137,7 @@ int main()
 		ball.update(dt);
 		// Update the HUD text
 		std::stringstream ss;
-		ss << "Score:" << score << "\nBalls:" << lives;
+		ss << "Level:" << level << "\nScore:" << score << "\nBalls:" << lives;
 		hud.setString(ss.str());
 
 
@@ -126,6 +146,8 @@ int main()
 		{
 			// reverse the ball direction
 			ball.reboundBottom();
+
+			miss.play();
 
 			// Remove a life
 			lives--;
@@ -145,6 +167,8 @@ int main()
 		{
 			ball.reboundPaddleOrTop();
 
+			hit.play();
+
 			// Add a point to the players score
 			score++;
 
@@ -155,6 +179,7 @@ int main()
 			ball.getPosition().left + 10 > window.getSize().x)
 		{
 			ball.reboundSides();
+			hit.play();
 		}
 
 		// Has the ball hit the paddle?
@@ -162,6 +187,7 @@ int main()
 		{
 			// Hit detected so reverse the ball and score a point
 			ball.reboundPaddleOrTop();
+			hit2.play();
 		}
 		/*
 		Draw the paddle, the ball and the HUD

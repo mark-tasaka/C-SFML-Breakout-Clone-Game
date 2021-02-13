@@ -12,7 +12,7 @@ Paddle::Paddle(float startX, float startY)
 	m_Position.x = startX;
 	m_Position.y = startY;
 
-	m_Shape.setSize(sf::Vector2f(100, 5));
+	m_Shape.setSize(sf::Vector2f(100, 10));
 	m_Shape.setPosition(m_Position);
 	
 }
