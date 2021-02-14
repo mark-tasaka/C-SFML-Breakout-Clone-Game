@@ -61,3 +61,9 @@ void Paddle::update(Time dt)
 
 	m_Shape.setPosition(m_Position);
 }
+
+//D'tor
+Paddle::~Paddle()
+{
+
+}

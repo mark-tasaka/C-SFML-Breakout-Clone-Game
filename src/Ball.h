@@ -9,8 +9,6 @@
 #include <SFML/Graphics.hpp>
 #include "stdafx.h"
 
-
-
 using namespace sf;
 
 class Ball
@@ -39,6 +37,8 @@ public:
 	void reboundBottom();
 
 	void update(Time dt);
+
+	~Ball();
 
 };
 

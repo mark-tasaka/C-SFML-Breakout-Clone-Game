@@ -57,3 +57,9 @@ void Ball::update(Time dt)
 	// Move the ball and the bat
 	m_Shape.setPosition(m_Position);
 }
+
+
+//D'tor
+Ball::~Ball()
+{
+}

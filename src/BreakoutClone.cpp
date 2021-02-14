@@ -4,18 +4,24 @@
 */
 #include "Paddle.h"
 #include "Ball.h"
+#include "Brick.h"
 #include <sstream>
 #include <cstdlib>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "stdafx.h"
+#include <iostream>
 
 using namespace sf;
+using namespace std;
 
 
 const int SCREEN_WIDTH = 1200;
 const int SCREEN_HEIGHT = 900;
+const int BALLS = 5;
+const Vector2f BRICK_SIZE = Vector2f(100, 20);
 const Color BALL_COLOUR = Color::Green;
+const Color BRICK_COLOUR = Color::Cyan;
 
 int main()
 {
@@ -29,7 +35,7 @@ int main()
 
 	int level = 1;
 	int score = 0;
-	int lives = 3;
+	int lives = BALLS;
 
 	// Create a paddle
 	Paddle paddle(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 80);
@@ -37,6 +43,25 @@ int main()
 	//Ball Object
 	//Ball ball(SCREEN_WIDTH / 2, 0);
 	Ball ball(6, SCREEN_WIDTH / 2, 0, BALL_COLOUR);
+
+	vector <Brick> bricks;
+	float startX = 250;
+	float startY = 100;
+
+
+	for (int i = 0; i < 30; i++)
+	{
+		Vector2f brickPos = Vector2f(startX, startY);
+		Brick brick(BRICK_SIZE, brickPos, BRICK_COLOUR);
+		bricks.push_back(brick);
+		startX += 100;
+
+		if (i == 8 || i == 17 || i == 26)
+		{
+			startY += 20;
+			startX = 250;
+		}
+	}
 
 	Texture background;
 	background.loadFromFile("graphic/background.png"); 
@@ -157,7 +182,7 @@ int main()
 				// reset the score
 				score = 0;
 				// reset the lives
-				lives = 3;
+				lives = BALLS;
 			}
 
 		}
@@ -200,6 +225,12 @@ int main()
 		window.draw(hud);
 		window.draw(paddle.getShape());
 		window.draw(ball.getShape());
+
+		for (auto& theBrick : bricks)
+		{
+			window.draw(theBrick.getShape());
+		}
+
 		window.display();
 	}
 
