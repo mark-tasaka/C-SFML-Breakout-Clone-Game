@@ -26,6 +26,11 @@ http://gamecodeschool.com/books/beginning-c-plus-plus-game-programming-2nd-editi
 ----------------------
 
 
+Update 1.02: 2021-02-14
+
+Updated existing files to allow for the generation of the collection of 'bricks' on the screen.
+
+
 Update 1.01: 2021-02-13
 
 Added sounds to the game.  Changed the shape of the ball from a square to a circle and modified exisiting files.
