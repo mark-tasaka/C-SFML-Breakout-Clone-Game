@@ -26,6 +26,11 @@ http://gamecodeschool.com/books/beginning-c-plus-plus-game-programming-2nd-editi
 ----------------------
 
 
+Update 1.03: 2021-02-15
+
+Added more functionally to the game by facilitating the 'destructions' of the bricks upon contact with the ball, and having the ball move in the reverse direction  upon destroying the brick (rebounding off the destroyed brick).
+
+
 Update 1.02: 2021-02-14
 
 Updated existing files to allow for the generation of the collection of 'bricks' on the screen.
