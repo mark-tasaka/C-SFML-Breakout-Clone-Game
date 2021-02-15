@@ -8,6 +8,8 @@
 
 #include <SFML/Graphics.hpp>
 #include "stdafx.h"
+#include "Constant.h"
+#include "Brick.h"
 
 using namespace sf;
 
@@ -17,9 +19,9 @@ private:
 	Vector2f m_Position;	
 	CircleShape m_Shape;
 
-	float m_Speed = 1000.0f;
-	float m_DirectionX = .2f;
-	float m_DirectionY = .2f;
+	float m_Speed = BALL_SPEED_BASE + BALL_SPEED_LEVEL;
+	float m_DirectionX = 0.2f;
+	float m_DirectionY = 0.2f;
 
 public:
 	Ball(double rad, float startX, float startY, Color colour);
@@ -35,6 +37,10 @@ public:
 	void reboundPaddleOrTop();
 
 	void reboundBottom();
+
+	void reboundBrick();
+
+	void ballReSpawn();
 
 	void update(Time dt);
 

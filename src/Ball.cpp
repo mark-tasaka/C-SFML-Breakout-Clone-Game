@@ -48,6 +48,19 @@ void Ball::reboundBottom()
 	m_DirectionY = -m_DirectionY;
 }
 
+void Ball::ballReSpawn()
+{
+	m_Position.y = 200;
+	m_Position.x = 500;
+
+}
+
+void Ball::reboundBrick()
+{
+	m_DirectionX = -m_DirectionX;
+	m_DirectionY = -m_DirectionY;
+}
+
 void Ball::update(Time dt)
 {
 	// Update the ball position variables

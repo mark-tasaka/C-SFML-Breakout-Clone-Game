@@ -11,17 +11,11 @@
 #include <SFML/Audio.hpp>
 #include "stdafx.h"
 #include <iostream>
+#include "Constant.h"
 
 using namespace sf;
 using namespace std;
 
-
-const int SCREEN_WIDTH = 1200;
-const int SCREEN_HEIGHT = 900;
-const int BALLS = 5;
-const Vector2f BRICK_SIZE = Vector2f(100, 20);
-const Color BALL_COLOUR = Color::Green;
-const Color BRICK_COLOUR = Color::Cyan;
 
 int main()
 {
@@ -29,37 +23,57 @@ int main()
 	VideoMode vm(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	// Create and open a window for the game
-
-	//RenderWindow window(vm, "Breakout Clone", Style::Fullscreen);
 	RenderWindow window(vm, "Breakout Clone", Style::Close);
 
-	int level = 1;
-	int score = 0;
-	int lives = BALLS;
+	unsigned int level = 1;
+	unsigned int score = 0;
+	unsigned int lives = BALLS;
 
 	// Create a paddle
-	Paddle paddle(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 80);
+	Paddle paddle(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 30);
 
 	//Ball Object
-	//Ball ball(SCREEN_WIDTH / 2, 0);
-	Ball ball(6, SCREEN_WIDTH / 2, 0, BALL_COLOUR);
+	Ball ball(6, SCREEN_WIDTH / 2, 300, BALL_COLOUR);
 
 	vector <Brick> bricks;
-	float startX = 250;
-	float startY = 100;
+	float startX = 250.0f;
+	float startY = 50.0f;
 
 
-	for (int i = 0; i < 30; i++)
+	Color brickColour = BRICK_COLOURS[0];
+
+	for (int i = 1; i < 46; i++)
 	{
-		Vector2f brickPos = Vector2f(startX, startY);
-		Brick brick(BRICK_SIZE, brickPos, BRICK_COLOUR);
-		bricks.push_back(brick);
-		startX += 100;
 
-		if (i == 8 || i == 17 || i == 26)
+		Vector2f brickPos = Vector2f(startX, startY);
+		Brick brick(BRICK_SIZE, brickPos, brickColour);
+		bricks.push_back(brick);
+		startX += 100.0f;
+
+		if (i % 9 ==0)
 		{
-			startY += 20;
-			startX = 250;
+			startY += 20.0f;
+			startX = 250.0f;
+		}
+
+		if (i >= 9 && i <= 17)
+		{
+			brickColour = BRICK_COLOURS[1];
+		}
+		
+		if (i >= 18 && i <= 26)
+		{
+			brickColour = BRICK_COLOURS[2];
+		}
+
+		if (i >= 27 && i <= 35)
+		{
+			brickColour = BRICK_COLOURS[3];
+		}
+
+		if (i >= 36 && i <= 46)
+		{
+			brickColour = BRICK_COLOURS[0];
 		}
 	}
 
@@ -162,15 +176,30 @@ int main()
 		ball.update(dt);
 		// Update the HUD text
 		std::stringstream ss;
-		ss << "Level:" << level << "\nScore:" << score << "\nBalls:" << lives;
+		ss << "Level:" << level << "\n\nScore:\n" << score << "\n\nBalls:" << lives;
 		hud.setString(ss.str());
+
+		//Ball hitting brick
+		for (int i = 0; i < bricks.size(); i++)
+		{
+			//if(ball. >= bricks[i].bottomLeft() )
+			if (ball.getPosition().intersects(bricks[i].getShape().getGlobalBounds()))
+			{
+				bricks[i].m_IsAlive = false;
+				bricks[i].destroyBrick();
+				hit.play();
+				score += 10;
+				ball.reboundBrick();
+			}
+		}
 
 
 		// Handle ball hitting the bottom
 		if (ball.getPosition().top > window.getSize().y)
 		{
 			// reverse the ball direction
-			ball.reboundBottom();
+			//ball.reboundBottom();
+			ball.ballReSpawn();
 
 			miss.play();
 
@@ -195,7 +224,7 @@ int main()
 			hit.play();
 
 			// Add a point to the players score
-			score++;
+			//score++;
 
 		}
 

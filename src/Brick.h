@@ -17,7 +17,9 @@ private:
 	Vector2f m_Position;
 
 	// A RectangleShape object
-	RectangleShape m_Shape;
+	RectangleShape m_BrickShape;
+	float brickXCoordinateStart;
+	float brickYCoordinateStart;
 
 public:
 	Brick(Vector2f size, Vector2f position, Color colour);

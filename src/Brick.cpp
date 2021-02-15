@@ -6,56 +6,57 @@
 #include <SFML/Graphics.hpp>
 #include "stdafx.h"
 #include "Brick.h"
+#include "Constant.h"
 
 using namespace sf;
 
 Brick::Brick(Vector2f size, Vector2f position, Color colour): m_IsAlive(true)
 {
-	m_Shape.setSize(size);
-	m_Shape.setPosition(position);
-	m_Shape.setFillColor(colour);
-	m_Shape.setOutlineColor(Color::White);
-	m_Shape.setOutlineThickness(-1);
+	m_BrickShape.setSize(size);
+	m_BrickShape.setPosition(position);
+	m_BrickShape.setFillColor(colour);
+	m_BrickShape.setOutlineColor(Color::White);
+	m_BrickShape.setOutlineThickness(-1);
 }
 
 void Brick::setSize(Vector2f size)
 {
-	size = Vector2f(100, 20);
-	m_Shape.setSize(size);
+	size = Vector2f(BRICK_WIDTH, BRICK_HEIGHT);
+	m_BrickShape.setSize(size);
 }
 
 RectangleShape Brick::getShape()
 {
-	return m_Shape;
+	return m_BrickShape;
 }
 
 
 Vector2f Brick::topRight()
 {
-	return Vector2f(m_Shape.getPosition().x + m_Shape.getSize().x,
-		m_Shape.getPosition().y);
+	return Vector2f(m_BrickShape.getPosition().x + m_BrickShape.getSize().x,
+		m_BrickShape.getPosition().y);
 }
 
 Vector2f Brick::topLeft()
 {
-	return m_Shape.getPosition();
+	return m_BrickShape.getPosition();
 }
 
 Vector2f Brick::bottomRight()
 {
-	return Vector2f(m_Shape.getPosition().x + m_Shape.getSize().x,
-		m_Shape.getPosition().y + m_Shape.getSize().y);
+	return Vector2f(m_BrickShape.getPosition().x + m_BrickShape.getSize().x,
+		m_BrickShape.getPosition().y + m_BrickShape.getSize().y);
 }
 
 Vector2f Brick::bottomLeft()
 {
-	return Vector2f(m_Shape.getPosition().x,
-		m_Shape.getPosition().y + m_Shape.getSize().y);
+	return Vector2f(m_BrickShape.getPosition().x,
+		m_BrickShape.getPosition().y + m_BrickShape.getSize().y);
 }
 
 void Brick::destroyBrick()
 {
-	m_Shape.setPosition(90000, 90000);
+	m_BrickShape.setPosition(90000, 90000);
 	m_IsAlive = false;
 }
 
