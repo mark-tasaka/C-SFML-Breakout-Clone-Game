@@ -26,6 +26,10 @@ http://gamecodeschool.com/books/beginning-c-plus-plus-game-programming-2nd-editi
 ----------------------
 
 
+Update 1.04: 2021-02-16
+
+New graphics have been added for the transition between the stages of the game (Start, Play, Pause, Game Over).  As well, an txt file has been added to record the highest game score.
+
 Update 1.03: 2021-02-15
 
 Added more functionally to the game by facilitating the 'destructions' of the bricks upon contact with the ball, and having the ball move in the reverse direction  upon destroying the brick (rebounding off the destroyed brick).
