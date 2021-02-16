@@ -6,6 +6,7 @@
 #include "Ball.h"
 #include "Brick.h"
 #include <sstream>
+#include <fstream>
 #include <cstdlib>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
@@ -22,11 +23,18 @@ int main()
 	// Create a video mode object
 	VideoMode vm(SCREEN_WIDTH, SCREEN_HEIGHT);
 
+	//enum for the 5 states of the game:
+	enum class State { START, PLAY, PAUSE, NEXT_LEVEL, GAME_OVER };
+
+	//Start State of the Game
+	State state = State::START;
+
 	// Create and open a window for the game
 	RenderWindow window(vm, "Breakout Clone", Style::Close);
 
 	unsigned int level = 1;
 	unsigned int score = 0;
+	unsigned int hiScore = 0;
 	unsigned int lives = BALLS;
 
 	// Create a paddle
@@ -42,7 +50,9 @@ int main()
 
 	Color brickColour = BRICK_COLOURS[0];
 
-	for (int i = 1; i < 46; i++)
+	unsigned int bricksRemaining = BRICKS_START;
+
+	for (int i = 1; i < BRICKS_START; i++)
 	{
 
 		Vector2f brickPos = Vector2f(startX, startY);
@@ -56,12 +66,12 @@ int main()
 			startX = 250.0f;
 		}
 
-		if (i >= 9 && i <= 17)
+		if (i >= 9 && i <= 17 || i >= 45 && i <= 53)
 		{
 			brickColour = BRICK_COLOURS[1];
 		}
 		
-		if (i >= 18 && i <= 26)
+		if (i >= 18 && i <= 26 || i >= 54 && i <= 64)
 		{
 			brickColour = BRICK_COLOURS[2];
 		}
@@ -71,12 +81,19 @@ int main()
 			brickColour = BRICK_COLOURS[3];
 		}
 
-		if (i >= 36 && i <= 46)
+		if (i >= 36 && i <= 44)
 		{
 			brickColour = BRICK_COLOURS[0];
 		}
 	}
 
+	// The Start State
+	Texture startGamePage;
+	startGamePage.loadFromFile("graphic/start.png");
+	Sprite spriteStartGame;
+	spriteStartGame.setTexture(startGamePage);
+
+	//Game Play State
 	Texture background;
 	background.loadFromFile("graphic/background.png"); 
 	Sprite spriteBackground;
@@ -87,18 +104,37 @@ int main()
 
 	// A cool retro-style font
 	Font font;
-	font.loadFromFile("font/PixelSplitter-Bold.ttf");
+	font.loadFromFile("font/PixelDigivolve.otf");
 
 	// Set the font to our retro-style
 	hud.setFont(font);
 
 	// Make it nice and big
-	hud.setCharacterSize(28);
+	hud.setCharacterSize(24);
 
 	// Choose a color
 	hud.setFillColor(Color::White);
 
 	hud.setPosition(20, 20);
+
+	// Load the high score from a text file/
+	std::ifstream inputFile("topScore/highScore.txt");
+	if (inputFile.is_open())
+	{
+		inputFile >> hiScore;
+		inputFile.close();
+	}
+
+	
+	// Hi Displayed On Start and Level Up Pages
+	Text hiScoreText;
+	hiScoreText.setFont(font);
+	hiScoreText.setCharacterSize(24);
+	hiScoreText.setFillColor(Color::Yellow);
+	hiScoreText.setPosition(500, 450);
+	std::stringstream ts;
+	ts << "Higest Score: " << hiScore;
+	hiScoreText.setString(ts.str());
 
 	// Here is our clock for timing everything
 	Clock clock;
@@ -134,114 +170,139 @@ int main()
 		while (window.pollEvent(event))
 		{
 			if (event.type == Event::Closed)
+			{
 				// Quit the game when the window is closed
 				window.close();
+			}
 
+			if (event.key.code == Keyboard::Return && state == State::START)
+			{
+				state = State::PLAY;
+			}
+
+			/*
+			if (event.key.code == Keyboard::Escape && state == State::START)
+			{
+				window.close();
+			}*/
 		}
 
-		// Handle the player quitting
 		if (Keyboard::isKeyPressed(Keyboard::Escape))
 		{
 			window.close();
 		}
 
-		// Handle the pressing and releasing of the arrow keys
-		if (Keyboard::isKeyPressed(Keyboard::Left))
+		if (state == State::PLAY)
 		{
-			paddle.moveLeft();
-		}
-		else
-		{
-			paddle.stopLeft();
-		}
 
-		if (Keyboard::isKeyPressed(Keyboard::Right))
-		{
-			paddle.moveRight();
-		}
-		else
-		{
-			paddle.stopRight();
-		}
 
-		/*
-		Update the paddle, the ball and the HUD
-		*********************************************************************
-		*********************************************************************
-		*********************************************************************
-		*/
-		// Update the delta time
-		Time dt = clock.restart();
-		paddle.update(dt);
-		ball.update(dt);
-		// Update the HUD text
-		std::stringstream ss;
-		ss << "Level:" << level << "\n\nScore:\n" << score << "\n\nBalls:" << lives;
-		hud.setString(ss.str());
-
-		//Ball hitting brick
-		for (int i = 0; i < bricks.size(); i++)
-		{
-			//if(ball. >= bricks[i].bottomLeft() )
-			if (ball.getPosition().intersects(bricks[i].getShape().getGlobalBounds()))
+			// Handle the player quitting
+			/*
+			if (Keyboard::isKeyPressed(Keyboard::Escape))
 			{
-				bricks[i].m_IsAlive = false;
-				bricks[i].destroyBrick();
+				window.close();
+			}*/
+
+			// Handle the pressing and releasing of the arrow keys
+			if (Keyboard::isKeyPressed(Keyboard::Left))
+			{
+				paddle.moveLeft();
+			}
+			else
+			{
+				paddle.stopLeft();
+			}
+
+			if (Keyboard::isKeyPressed(Keyboard::Right))
+			{
+				paddle.moveRight();
+			}
+			else
+			{
+				paddle.stopRight();
+			}
+
+
+			/*
+			Update the paddle, the ball and the HUD
+			*********************************************************************
+			*********************************************************************
+			*********************************************************************
+			*/
+			// Update the delta time
+			Time dt = clock.restart();
+			paddle.update(dt);
+			ball.update(dt);
+			// Update the HUD text
+			std::stringstream ss;
+			ss << "Level: " << level << "\n\nScore:\n" << score << "\n\nBalls: " << lives << "\n\nBricks\nRemaining:\n" << bricksRemaining << "\n\nTop Score:\n" << hiScore;
+			hud.setString(ss.str());
+
+			//Ball hitting brick
+			for (int i = 0; i < bricks.size(); i++)
+			{
+				//if(ball. >= bricks[i].bottomLeft() )
+				if (ball.getPosition().intersects(bricks[i].getShape().getGlobalBounds()))
+				{
+					bricks[i].m_IsAlive = false;
+					bricks[i].destroyBrick();
+					hit.play();
+					score += 10;
+					bricksRemaining -= 1;
+					ball.reboundBrick();
+				}
+			}
+
+
+			// Handle ball hitting the bottom
+			if (ball.getPosition().top > window.getSize().y)
+			{
+				// reverse the ball direction
+				//ball.reboundBottom();
+				ball.ballReSpawn();
+
+				miss.play();
+
+				// Remove a life
+				lives--;
+
+				// Check for zero lives
+				if (lives < 1) {
+					// reset the score
+					score = 0;
+					// reset the lives
+					lives = BALLS;
+				}
+
+			}
+
+			// Handle ball hitting top
+			if (ball.getPosition().top < 0)
+			{
+				ball.reboundPaddleOrTop();
+
 				hit.play();
-				score += 10;
-				ball.reboundBrick();
-			}
-		}
 
+				// Add a point to the players score
+				//score++;
 
-		// Handle ball hitting the bottom
-		if (ball.getPosition().top > window.getSize().y)
-		{
-			// reverse the ball direction
-			//ball.reboundBottom();
-			ball.ballReSpawn();
-
-			miss.play();
-
-			// Remove a life
-			lives--;
-
-			// Check for zero lives
-			if (lives < 1) {
-				// reset the score
-				score = 0;
-				// reset the lives
-				lives = BALLS;
 			}
 
-		}
+			// Handle ball hitting sides
+			if (ball.getPosition().left < 200 ||
+				ball.getPosition().left + 10 > window.getSize().x)
+			{
+				ball.reboundSides();
+				hit.play();
+			}
 
-		// Handle ball hitting top
-		if (ball.getPosition().top < 0)
-		{
-			ball.reboundPaddleOrTop();
-
-			hit.play();
-
-			// Add a point to the players score
-			//score++;
-
-		}
-
-		// Handle ball hitting sides
-		if (ball.getPosition().left < 200 ||
-			ball.getPosition().left + 10 > window.getSize().x)
-		{
-			ball.reboundSides();
-			hit.play();
-		}
-
-		// Has the ball hit the paddle?
-		if (ball.getPosition().intersects(paddle.getPosition()))
-		{
-			// Hit detected so reverse the ball and score a point
-			ball.reboundPaddleOrTop();
-			hit2.play();
+			// Has the ball hit the paddle?
+			if (ball.getPosition().intersects(paddle.getPosition()))
+			{
+				// Hit detected so reverse the ball and score a point
+				ball.reboundPaddleOrTop();
+				hit2.play();
+			}
 		}
 		/*
 		Draw the paddle, the ball and the HUD
@@ -250,14 +311,24 @@ int main()
 		*********************************************************************
 		*/
 		window.clear();
-		window.draw(spriteBackground);
-		window.draw(hud);
-		window.draw(paddle.getShape());
-		window.draw(ball.getShape());
 
-		for (auto& theBrick : bricks)
+		if (state == State::START)
 		{
-			window.draw(theBrick.getShape());
+			window.draw(spriteStartGame);
+			window.draw(hiScoreText);
+		}
+
+		if (state == State::PLAY)
+		{
+			window.draw(spriteBackground);
+			window.draw(hud);
+			window.draw(paddle.getShape());
+			window.draw(ball.getShape());
+
+			for (auto& theBrick : bricks)
+			{
+				window.draw(theBrick.getShape());
+			}
 		}
 
 		window.display();

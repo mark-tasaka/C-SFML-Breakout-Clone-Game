@@ -17,11 +17,12 @@ const unsigned int BRICK_WIDTH = 100;
 const unsigned int BRICK_HEIGHT = 20;
 const float BALL_SPEED_BASE = 500.0f;
 const float BALL_SPEED_LEVEL = 500.0f;
+const unsigned int BRICKS_START = 64;
 
 const Vector2f BRICK_SIZE = Vector2f(100, 20);
-const Color BRICK_COLOUR = Color::Cyan;
+//const Color BRICK_COLOUR = Color::Cyan;
 
-const vector<Color> BRICK_COLOURS = { Color::Cyan, Color::Blue, Color::Yellow, Color::Green };
+const vector<Color> BRICK_COLOURS = { Color::Cyan, Color::Blue, Color::Magenta, Color::Green };
 const Color BALL_COLOUR = Color::Green;
 //const unsigned int FPS = 60;
 //const unsigned int FRAME_TARGET_TIME = 1000 / FPS;
