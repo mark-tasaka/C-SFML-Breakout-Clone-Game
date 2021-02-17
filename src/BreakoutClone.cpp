@@ -99,6 +99,18 @@ int main()
 	Sprite spriteBackground;
 	spriteBackground.setTexture(background);
 
+	// The Pause State
+	Texture pauseGamePage;
+	pauseGamePage.loadFromFile("graphic/paused.png");
+	Sprite spritePauseGame;
+	spritePauseGame.setTexture(pauseGamePage);
+
+	// The Game Over State
+	Texture gameOverPage;
+	gameOverPage.loadFromFile("graphic/gameOver.png");
+	Sprite spriteGameOver;
+	spriteGameOver.setTexture(gameOverPage);
+
 	// Create a Text object called HUD
 	Text hud;
 
@@ -180,6 +192,29 @@ int main()
 				state = State::PLAY;
 			}
 
+
+			//return from paused game
+			if (event.key.code == Keyboard::Return &&
+				state == State::PAUSE)
+			{
+				state = State::PLAY;
+				// Reset the clock so there isn't a frame jump
+				clock.restart();
+			}
+
+			//new Game from Game Over Stage
+			if (event.key.code == Keyboard::Return &&
+				state == State::GAME_OVER)
+			{
+				// Reset the clock so there isn't a frame jump
+				score = 0;
+				level = 1;
+				clock.restart();
+
+				state = State::START;
+			}
+
+
 			/*
 			if (event.key.code == Keyboard::Escape && state == State::START)
 			{
@@ -195,6 +230,13 @@ int main()
 		if (state == State::PLAY)
 		{
 
+
+			// Pause a game while playing
+			if (event.key.code == Keyboard::Space &&
+				state == State::PLAY)
+			{
+				state = State::PAUSE;
+			}
 
 			// Handle the player quitting
 			/*
@@ -250,6 +292,12 @@ int main()
 					score += 10;
 					bricksRemaining -= 1;
 					ball.reboundBrick();
+
+					if (score > hiScore)
+					{
+						hiScore = score;
+					}
+
 				}
 			}
 
@@ -268,8 +316,18 @@ int main()
 
 				// Check for zero lives
 				if (lives < 1) {
+
+					state = State::GAME_OVER;
 					// reset the score
-					score = 0;
+					//score = 0;
+
+					//state = State::GAME_OVER;
+
+					std::ofstream outputFile("topScore/highScore.txt");
+					outputFile << hiScore;
+					outputFile.close();
+
+
 					// reset the lives
 					lives = BALLS;
 				}
@@ -329,7 +387,44 @@ int main()
 			{
 				window.draw(theBrick.getShape());
 			}
+
 		}
+
+
+		if (state == State::PAUSE)
+		{
+
+			window.draw(spriteBackground);
+			window.draw(hud);
+			window.draw(paddle.getShape());
+			window.draw(ball.getShape());
+
+			for (auto& theBrick : bricks)
+			{
+				window.draw(theBrick.getShape());
+			}
+
+			window.draw(spritePauseGame);
+		}
+
+
+
+		if (state == State::GAME_OVER)
+		{
+
+			window.draw(spriteBackground);
+			window.draw(hud);
+			window.draw(paddle.getShape());
+			window.draw(ball.getShape());
+
+			for (auto& theBrick : bricks)
+			{
+				window.draw(theBrick.getShape());
+			}
+
+			window.draw(spriteGameOver);
+		}
+
 
 		window.display();
 	}

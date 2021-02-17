@@ -12,7 +12,7 @@ using namespace std;
 
 const unsigned int SCREEN_WIDTH = 1200;
 const unsigned int SCREEN_HEIGHT = 900;
-const unsigned int BALLS = 5;
+const unsigned int BALLS = 2;
 const unsigned int BRICK_WIDTH = 100;
 const unsigned int BRICK_HEIGHT = 20;
 const float BALL_SPEED_BASE = 500.0f;
