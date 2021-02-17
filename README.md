@@ -26,6 +26,12 @@ http://gamecodeschool.com/books/beginning-c-plus-plus-game-programming-2nd-editi
 ----------------------
 
 
+
+Update 1.05: 2021-02-17
+
+The functionally for transitioning between stages (Start Menu, Play, Pause Game, Game Over) has been added to the game. 
+
+
 Update 1.04: 2021-02-16
 
 New graphics have been added for the transition between the stages of the game (Start, Play, Pause, Game Over).  As well, an txt file has been added to record the highest game score.
