@@ -26,6 +26,10 @@ http://gamecodeschool.com/books/beginning-c-plus-plus-game-programming-2nd-editi
 ----------------------
 
 
+Update 1.06: 2021-02-18
+
+Add the transition to the 'Next Level' functionality.  Started work on the SpawnBricks class.
+
 
 Update 1.05: 2021-02-17
 
