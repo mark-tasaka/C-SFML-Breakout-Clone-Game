@@ -63,6 +63,10 @@ void Ball::reboundBrick()
 
 void Ball::update(Time dt)
 {
+	//float convertLevel = (float)level;
+
+	//float levelSpeed = (BALL_SPEED_LEVEL * convertLevel);
+	//m_Speed += levelSpeed;
 	// Update the ball position variables
 	m_Position.y += m_DirectionY * m_Speed * dt.asSeconds();
 	m_Position.x += m_DirectionX * m_Speed * dt.asSeconds();

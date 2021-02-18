@@ -25,6 +25,53 @@ void Brick::setSize(Vector2f size)
 	m_BrickShape.setSize(size);
 }
 
+std::vector<Brick> Brick::spawnBricks()
+{
+	vector <Brick> bricks;
+	float startX = 250.0f;
+	float startY = 50.0f;
+
+	Color brickColour = BRICK_COLOURS[0];
+
+	for (int i = 1; i < BRICKS_START; i++)
+	{
+
+		Vector2f brickPos = Vector2f(startX, startY);
+		Brick brick(BRICK_SIZE, brickPos, brickColour);
+		bricks.push_back(brick);
+		startX += 100.0f;
+
+		if (i % 9 == 0)
+		{
+			startY += 20.0f;
+			startX = 250.0f;
+		}
+
+		if (i >= 9 && i <= 17 || i >= 45 && i <= 53)
+		{
+			brickColour = BRICK_COLOURS[1];
+		}
+
+		if (i >= 18 && i <= 26 || i >= 54 && i <= 64)
+		{
+			brickColour = BRICK_COLOURS[2];
+		}
+
+		if (i >= 27 && i <= 35)
+		{
+			brickColour = BRICK_COLOURS[3];
+		}
+
+		if (i >= 36 && i <= 44)
+		{
+			brickColour = BRICK_COLOURS[0];
+		}
+	}
+
+	return bricks;
+
+}
+
 RectangleShape Brick::getShape()
 {
 	return m_BrickShape;

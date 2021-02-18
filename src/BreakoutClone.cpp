@@ -5,6 +5,7 @@
 #include "Paddle.h"
 #include "Ball.h"
 #include "Brick.h"
+#include "Brick.cpp"
 #include <sstream>
 #include <fstream>
 #include <cstdlib>
@@ -12,11 +13,11 @@
 #include <SFML/Audio.hpp>
 #include "stdafx.h"
 #include <iostream>
+#include <string>
 #include "Constant.h"
 
 using namespace sf;
 using namespace std;
-
 
 int main()
 {
@@ -41,18 +42,25 @@ int main()
 	Paddle paddle(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 30);
 
 	//Ball Object
-	Ball ball(6, SCREEN_WIDTH / 2, 300, BALL_COLOUR);
+	Ball ball(6, SCREEN_WIDTH / 2, 200, BALL_COLOUR);
+
+	float levelConversion = (float)level;
+
+	ball.m_Speed += (BALL_SPEED_LEVEL * levelConversion);
+
+	unsigned int Test = 3;
+
+	//unsigned int bricksRemaining = BRICKS_START - 1;
+
+	unsigned int bricksRemaining = Test - 1;
 
 	vector <Brick> bricks;
 	float startX = 250.0f;
 	float startY = 50.0f;
 
-
 	Color brickColour = BRICK_COLOURS[0];
 
-	unsigned int bricksRemaining = BRICKS_START;
-
-	for (int i = 1; i < BRICKS_START; i++)
+	for (int i = 1; i < Test; i++)
 	{
 
 		Vector2f brickPos = Vector2f(startX, startY);
@@ -60,7 +68,7 @@ int main()
 		bricks.push_back(brick);
 		startX += 100.0f;
 
-		if (i % 9 ==0)
+		if (i % 9 == 0)
 		{
 			startY += 20.0f;
 			startX = 250.0f;
@@ -70,7 +78,7 @@ int main()
 		{
 			brickColour = BRICK_COLOURS[1];
 		}
-		
+
 		if (i >= 18 && i <= 26 || i >= 54 && i <= 64)
 		{
 			brickColour = BRICK_COLOURS[2];
@@ -86,6 +94,7 @@ int main()
 			brickColour = BRICK_COLOURS[0];
 		}
 	}
+
 
 	// The Start State
 	Texture startGamePage;
@@ -110,6 +119,13 @@ int main()
 	gameOverPage.loadFromFile("graphic/gameOver.png");
 	Sprite spriteGameOver;
 	spriteGameOver.setTexture(gameOverPage);
+
+
+	// The Level Up State
+	Texture levelUpPage;
+	levelUpPage.loadFromFile("graphic/nextLevel.png");
+	Sprite spriteLevelUp;
+	spriteLevelUp.setTexture(levelUpPage);
 
 	// Create a Text object called HUD
 	Text hud;
@@ -193,6 +209,11 @@ int main()
 			}
 
 
+			if (event.key.code == Keyboard::Return && state == State::NEXT_LEVEL)
+			{
+				state = State::PLAY;
+			}
+
 			//return from paused game
 			if (event.key.code == Keyboard::Return &&
 				state == State::PAUSE)
@@ -211,15 +232,10 @@ int main()
 				level = 1;
 				clock.restart();
 
-				state = State::START;
+				state = State::PLAY;
 			}
 
 
-			/*
-			if (event.key.code == Keyboard::Escape && state == State::START)
-			{
-				window.close();
-			}*/
 		}
 
 		if (Keyboard::isKeyPressed(Keyboard::Escape))
@@ -238,17 +254,18 @@ int main()
 				state = State::PAUSE;
 			}
 
-			// Handle the player quitting
-			/*
-			if (Keyboard::isKeyPressed(Keyboard::Escape))
-			{
-				window.close();
-			}*/
 
 			// Handle the pressing and releasing of the arrow keys
 			if (Keyboard::isKeyPressed(Keyboard::Left))
 			{
-				paddle.moveLeft();
+				if (paddle.getPosition().left < 200)
+				{
+					paddle.stopLeft();
+				}
+				else
+				{
+					paddle.moveLeft();
+				}
 			}
 			else
 			{
@@ -257,7 +274,15 @@ int main()
 
 			if (Keyboard::isKeyPressed(Keyboard::Right))
 			{
-				paddle.moveRight();
+
+				if (paddle.getPosition().left + 110 > window.getSize().x )
+				{
+					paddle.stopRight();
+				}
+				else
+				{
+					paddle.moveRight();
+				}
 			}
 			else
 			{
@@ -298,6 +323,17 @@ int main()
 						hiScore = score;
 					}
 
+					if (bricksRemaining == 0)
+					{
+						state = State::NEXT_LEVEL;
+						level += 1;
+
+						//RESET THE LEVEL HERE
+						std::string levelString = to_string(level);
+						//std::vector<Brick> a = Brick::spawnBricks();
+
+					}
+
 				}
 			}
 
@@ -306,7 +342,6 @@ int main()
 			if (ball.getPosition().top > window.getSize().y)
 			{
 				// reverse the ball direction
-				//ball.reboundBottom();
 				ball.ballReSpawn();
 
 				miss.play();
@@ -318,10 +353,6 @@ int main()
 				if (lives < 1) {
 
 					state = State::GAME_OVER;
-					// reset the score
-					//score = 0;
-
-					//state = State::GAME_OVER;
 
 					std::ofstream outputFile("topScore/highScore.txt");
 					outputFile << hiScore;
@@ -341,8 +372,6 @@ int main()
 
 				hit.play();
 
-				// Add a point to the players score
-				//score++;
 
 			}
 
@@ -423,6 +452,23 @@ int main()
 			}
 
 			window.draw(spriteGameOver);
+		}
+
+
+		if (state == State::NEXT_LEVEL)
+		{
+
+			window.draw(spriteBackground);
+			window.draw(hud);
+			window.draw(paddle.getShape());
+			window.draw(ball.getShape());
+
+			for (auto& theBrick : bricks)
+			{
+				window.draw(theBrick.getShape());
+			}
+
+			window.draw(spriteLevelUp);
 		}
 
 

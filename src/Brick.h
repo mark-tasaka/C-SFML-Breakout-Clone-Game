@@ -10,6 +10,7 @@
 #include "stdafx.h"
 
 using namespace sf;
+using namespace std;
 
 class Brick
 {
@@ -25,6 +26,7 @@ public:
 	Brick(Vector2f size, Vector2f position, Color colour);
 	bool m_IsAlive = true;
 	void setSize(Vector2f size);
+	std::vector<Brick> spawnBricks();
 	RectangleShape getShape();
 	Vector2f topRight();
 	Vector2f topLeft();

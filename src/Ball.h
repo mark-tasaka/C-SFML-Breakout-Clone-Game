@@ -19,7 +19,7 @@ private:
 	Vector2f m_Position;	
 	CircleShape m_Shape;
 
-	float m_Speed = BALL_SPEED_BASE + BALL_SPEED_LEVEL;
+	//float m_Speed = BALL_SPEED_BASE;
 	float m_DirectionX = 0.2f;
 	float m_DirectionY = 0.2f;
 
@@ -31,6 +31,8 @@ public:
 	CircleShape getShape();
 
 	float getXVelocity();
+
+	float m_Speed = BALL_SPEED_BASE;
 
 	void reboundSides();
 
